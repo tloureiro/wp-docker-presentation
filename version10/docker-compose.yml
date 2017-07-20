@@ -1,0 +1,54 @@
+version: '2'
+
+services:
+  db:
+    image: mysql
+    volumes:
+      - ./mysql:/var/lib/mysql:rw
+    environment:
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    ports:
+      - 3306:3306  
+
+  wordpress:
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: dockerfile-wordpress-extended
+    image: wordpress-extended
+    volumes:
+      - ./wordpress:/var/www/html:rw
+      - ./log:/var/log/apache2:rw
+      - ./config/php.ini:/usr/local/etc/php/php.ini:rw
+    ports:
+      - 80:80
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+         
+
+  shell:
+    build:
+      context: .
+      dockerfile: dockerfile-wordpress-extended
+    image: wordpress-extended
+    command: 'bash'
+    volumes_from:
+      - wordpress
+
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    ports:
+      - 8080:80
+    environment:
+      MYSQL_USERNAME: wordpress
+      MYSQL_ROOT_PASSWORD: wordpress
+      PMA_HOST: db

@@ -10,11 +10,16 @@ services:
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
+    ports:
+      - 3306:3306
 
   wordpress:
     depends_on:
       - db
-    image: wordpress
+    build:
+      context: .
+      dockerfile: dockerfile-wordpress-extended
+    image: wordpress-extended
     volumes:
       - ./wordpress:/var/www/html:rw
       - ./log:/var/log/apache2:rw

@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+  db:
+    image: mysql
+    volumes:
+      - ./mysql:/var/lib/mysql:rw
+    environment:
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress
+    volumes:
+      - ./wordpress:/var/www/html:rw
+      - ./log:/var/log/apache2:rw
+      - ./config/php.ini:/usr/local/etc/php/php.ini:rw
+    ports:
+      - 8080:80
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress

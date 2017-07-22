@@ -6,6 +6,7 @@ do
 	echo "Creating wordpress instance. Port:$HOST_PORT"
 	docker run --name some-mysql-$HOST_PORT -e MYSQL_ROOT_PASSWORD=password -d mysql
 	docker run --name some-wordpress-$HOST_PORT --link some-mysql-$HOST_PORT:mysql -p $HOST_PORT:80 -d wordpress
+	sleep 2
 	echo "Done!";
 done
 
